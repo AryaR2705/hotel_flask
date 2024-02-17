@@ -15,7 +15,7 @@ with open(VECTORIZER_FILE_PATH, 'rb') as vectorizer_file:
     vectorizer = pickle.load(vectorizer_file)
 
 # Initialize CORS with the Flask app
-cors = CORS(app)
+CORS(app)
 
 @app.route('/predict', methods=['POST', 'OPTIONS'])
 def predict():
@@ -31,7 +31,8 @@ def predict():
         vectorized_text = vectorizer.transform([text_input])
 
         # Make predictions using the MLP model
-        prediction = mlp_model.predict(vectorized_text)
+        with app.app_context():
+            prediction = mlp_model.predict(vectorized_text)
 
         # Format the response
         response = {'prediction': prediction[0]}
